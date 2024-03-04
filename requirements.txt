@@ -3,3 +3,4 @@ polars
 tiktoken
 openai
 PyGithub
+black

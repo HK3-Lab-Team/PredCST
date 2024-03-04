@@ -79,10 +79,12 @@ class PythonParser(OsProcessor):
         directory_path: str,
         visitor: Optional[FunctionAndClassVisitor] = None,
         remove_docstrings: bool = False,
+        lint_code:bool = True
     ):
         super().__init__(directory_path)
         self.visitor = visitor if visitor else FunctionAndClassVisitor()
         self.remove_docstrings = remove_docstrings
+        self.lint_code = lint_code
 
     def remove_docstring(self, tree: cst.Module) -> str:
         """Removes docstrings from the given code and returns the code without docstrings."""
@@ -147,34 +149,22 @@ class PythonParser(OsProcessor):
         # Add the processed code to the corresponding list in the visitor
         self.visitor.function_source_codes.append(source_code)
 
-    def process_file(self, file_path: str):
+    def normalize_file(self, file_path: str):
         """This method is called for every file in the directory.
         It does the following:
         1. Runs flake8 on the file
         if flake8 returns a non-zero exit code, it means the file has a syntax error
-        2. Reads the file
-        3. Parses the file
-        4. Visits the file with the visitor
+
 
         """
         result = subprocess.run(
-            ["flake8", "--select=E999", file_path], capture_output=True
+            ["black", file_path], capture_output=True
         )
 
         if result.returncode != 0:
             print(f"Skipping file with syntax error: {file_path}")
             print(result.stderr.decode("utf-8"))
             return
-
-        with open(file_path, "r", encoding="utf-8") as f:
-            source_code = f.read()
-
-        try:
-            tree = cst.parse_module(source_code)
-            tree.visit(self.visitor)
-        except cst.ParserSyntaxError as e:
-            print(f"Syntax error: {e}")
-            print(f"Skipping file with syntax error: {file_path}")
 
     def process_directory(
         self,
@@ -189,6 +179,8 @@ class PythonParser(OsProcessor):
         python_files = self.get_files_with_extension(".py")
 
         for file_path in python_files:
+            if self.lint_code:
+                self.normalize_file(file_path)
             self._process_file(file_path)
 
         result_dict = {

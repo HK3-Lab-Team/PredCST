@@ -35,6 +35,7 @@ def traverse_and_collect_rtd(directory):
 def extract_values_python(
     directory_path: str,
     remove_docstrings: bool = False,
+    lint_code:bool = True,
     resolution: str = "function",
 ) -> Tuple[List[str], List[Dict[str, str]]]:
     values = []
@@ -43,6 +44,7 @@ def extract_values_python(
     parser = PythonParser(
         directory_path=directory_path,
         remove_docstrings=remove_docstrings,
+        lint_code=lint_code
     )
 
     results_dict = parser.process_directory()

@@ -100,6 +100,7 @@ class CodeFrame():
         directory_path: str,
         value_column: str,
         remove_docstrings: bool = False,
+        lint_code: bool = True,
         resolution: str = "both",
         context_columns: Optional[List[str]] = None,
         name: str = "code_frame",
@@ -107,7 +108,7 @@ class CodeFrame():
 
     ) -> "CodeFrame":
         values, context = extract_values_python(
-            directory_path,remove_docstrings, resolution
+            directory_path,remove_docstrings,lint_code, resolution
         )
         # convert retrieved data to polars dataframe
         df = pl.DataFrame({value_column: values})

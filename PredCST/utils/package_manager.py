@@ -53,11 +53,12 @@ def list_pip_versions(package_name: str) -> List[str]:
 
 def list_pyenv_environments():
     pyenv_versions_path = os.path.expanduser("~/.pyenv/versions")
+    envs = []
     try:
         environments = os.listdir(pyenv_versions_path)
-        print("Available pyenv environments:")
         for env in environments:
             if env not in [".DS_Store", "3.12.1"]:
-                print(env)
+                envs.append(env)
     except FileNotFoundError:
         print("Pyenv versions directory not found. Is pyenv installed?")
+    return envs

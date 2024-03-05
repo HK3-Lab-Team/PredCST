@@ -1,31 +1,33 @@
 import libcst as cst
+
 # Function Call Counter
 
 NODETYPE_COUNTERS = [
-    'FunctionCallCounter',
-    'ArgumentTypeCounter',
-    'ImportCounter',
-    'IfStatementCounter',
-    'BaseCompoundStatementCounter',
-    'ForLoopCounter',
-    'WhileLoopCounter',
-    'TryExceptCounter',
-    'WithStatementCounter',
-    'LambdaFunctionCounter',
-    'GlobalStatementCounter',
-    'NonlocalStatementCounter',
-    'ListComprehensionCounter',
-    'DictComprehensionCounter',
-    'SetComprehensionCounter',
-    'GeneratorExpressionCounter',
-    'AwaitCounter',
-    'ReturnCounter',
-    'BreakCounter',
-    'ContinueCounter',
-    'RaiseCounter',
-    'AssertCounter',
-    'PassCounter'
+    "FunctionCallCounter",
+    "ArgumentTypeCounter",
+    "ImportCounter",
+    "IfStatementCounter",
+    "BaseCompoundStatementCounter",
+    "ForLoopCounter",
+    "WhileLoopCounter",
+    "TryExceptCounter",
+    "WithStatementCounter",
+    "LambdaFunctionCounter",
+    "GlobalStatementCounter",
+    "NonlocalStatementCounter",
+    "ListComprehensionCounter",
+    "DictComprehensionCounter",
+    "SetComprehensionCounter",
+    "GeneratorExpressionCounter",
+    "AwaitCounter",
+    "ReturnCounter",
+    "BreakCounter",
+    "ContinueCounter",
+    "RaiseCounter",
+    "AssertCounter",
+    "PassCounter",
 ]
+
 
 class FunctionCallCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -39,6 +41,7 @@ class FunctionCallCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.function_call_count
+
 
 # Argument Type Counter
 class ArgumentTypeCounter(cst.CSTVisitor):
@@ -60,6 +63,7 @@ class ArgumentTypeCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.argument_type_count
 
+
 # Import Counter
 class ImportCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -78,6 +82,7 @@ class ImportCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.import_count
 
+
 # If Statement Counter
 class IfStatementCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -91,6 +96,7 @@ class IfStatementCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.if_statement_count
+
 
 # Base Compound Statement Counter
 class BaseCompoundStatementCounter(cst.CSTVisitor):
@@ -106,6 +112,7 @@ class BaseCompoundStatementCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.compound_statement_count
 
+
 # For Loop Counter
 class ForLoopCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -119,6 +126,7 @@ class ForLoopCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.for_loop_count
+
 
 # While Loop Counter
 class WhileLoopCounter(cst.CSTVisitor):
@@ -134,6 +142,7 @@ class WhileLoopCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.while_loop_count
 
+
 # Try Except Counter
 class TryExceptCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -147,6 +156,7 @@ class TryExceptCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.try_except_count
+
 
 # With Statement Counter
 class WithStatementCounter(cst.CSTVisitor):
@@ -162,6 +172,7 @@ class WithStatementCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.with_statement_count
 
+
 # Lambda Function Counter
 class LambdaFunctionCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -175,6 +186,7 @@ class LambdaFunctionCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.lambda_function_count
+
 
 # Global Statement Counter
 class GlobalStatementCounter(cst.CSTVisitor):
@@ -190,6 +202,7 @@ class GlobalStatementCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.global_statement_count
 
+
 # Nonlocal Statement Counter
 class NonlocalStatementCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -204,6 +217,7 @@ class NonlocalStatementCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.nonlocal_statement_count
 
+
 class ListComprehensionCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -216,6 +230,7 @@ class ListComprehensionCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.list_comprehension_count
+
 
 class DictComprehensionCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -230,6 +245,7 @@ class DictComprehensionCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.dict_comprehension_count
 
+
 class SetComprehensionCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -242,6 +258,7 @@ class SetComprehensionCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.set_comprehension_count
+
 
 class GeneratorExpressionCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -256,6 +273,7 @@ class GeneratorExpressionCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.generator_expression_count
 
+
 class YieldCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -268,6 +286,7 @@ class YieldCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.yield_count
+
 
 class AwaitCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -282,6 +301,7 @@ class AwaitCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.await_count
 
+
 class ReturnCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -294,6 +314,7 @@ class ReturnCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.return_count
+
 
 class BreakCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -308,6 +329,7 @@ class BreakCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.break_count
 
+
 class ContinueCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -321,6 +343,7 @@ class ContinueCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.continue_count
 
+
 class RaiseCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -333,6 +356,7 @@ class RaiseCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.raise_count
+
 
 class AssertCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -360,4 +384,3 @@ class PassCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.pass_count
-

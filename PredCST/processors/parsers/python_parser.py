@@ -1,35 +1,7 @@
 import subprocess
-from typing import List, Optional, Tuple
-
+from typing import List, Dict, Any
 import libcst as cst
-
 from PredCST.processors.os_processor import OsProcessor
-
-
-
-class PythonDocstringExtractor:
-    @staticmethod
-    def extract_docstring(function_def: cst.FunctionDef) -> str:
-        docstring = None
-
-        for stmt in function_def.body.body:
-            if isinstance(stmt, cst.SimpleStatementLine):
-                for expr in stmt.body:
-                    if isinstance(expr, cst.Expr) and isinstance(
-                        expr.value, cst.SimpleString
-                    ):
-                        docstring = expr.value.value.strip('"').strip("'")
-                        break
-            if docstring is not None:
-                break
-
-        if docstring is not None:
-            return docstring.strip()
-        else:
-            function_name = function_def.name.value
-            return f"No docstring provided for function '{function_name}'. Please add a docstring to describe this function."
-
-
 class FunctionAndClassVisitor(cst.CSTVisitor):
     def __init__(self):
         self.function_source_codes = []
@@ -72,24 +44,40 @@ class FunctionAndClassVisitor(cst.CSTVisitor):
         self.full_source_list.append(class_source_code)
         self.class_count += 1
 
+class PythonDocstringExtractor:
+    @staticmethod
+    def extract_docstring(function_def: cst.FunctionDef) -> str:
+        docstring = None
+
+        for stmt in function_def.body.body:
+            if isinstance(stmt, cst.SimpleStatementLine):
+                for expr in stmt.body:
+                    if isinstance(expr, cst.Expr) and isinstance(
+                        expr.value, cst.SimpleString
+                    ):
+                        docstring = expr.value.value.strip('"').strip("'")
+                        break
+            if docstring is not None:
+                break
+
+        if docstring is not None:
+            return docstring.strip()
+        else:
+            function_name = function_def.name.value
+            return f"No docstring provided for function '{function_name}'."
 
 class PythonParser(OsProcessor):
     def __init__(
         self,
         directory_path: str,
-        visitor: Optional[FunctionAndClassVisitor] = None,
         remove_docstrings: bool = False,
-        lint_code:bool = True
+        lint_code: bool = False
     ):
         super().__init__(directory_path)
-        self.visitor = visitor if visitor else FunctionAndClassVisitor()
         self.remove_docstrings = remove_docstrings
         self.lint_code = lint_code
 
-    def remove_docstring(self, tree: cst.Module) -> str:
-        """Removes docstrings from the given code and returns the code without docstrings."""
-
-        # Remove docstrings using a transformer
+    def remove_docstring(self, tree: cst.Module) -> cst.Module:
         class DocstringRemover(cst.CSTTransformer):
             def leave_FunctionDef(
                 self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef
@@ -115,82 +103,80 @@ class PythonParser(OsProcessor):
                     )
                 )
 
-        tree = tree.visit(DocstringRemover())
-        return tree.code
+        return tree.visit(DocstringRemover())
 
-    def _process_file(self, file_path: str):
-        """This method is called for every file in the directory.
-        It does the following:
-        1. Reads the file
-        2. Parses the file
-        3. Visits the file with the visitor
-        """
-        # get current number of nodes in visitor
-        current_node_count = self.visitor.function_count + self.visitor.class_count
-        with open(file_path, "r", encoding="utf-8") as file:
-            source_code = file.read()
-
-        try:
-            tree = cst.parse_module(source_code)
-        except cst.ParserSyntaxError:
-            print(f"Skipping file {file_path}: Failed to parse syntax")
-            return
-
-        tree.visit(self.visitor)
-        # calculate how many new nodes were added
-        new_node_counter = (
-            self.visitor.function_count + self.visitor.class_count - current_node_count
-        )
-        self.visitor.filename_map.extend([file_path] * new_node_counter)
-        # Remove docstrings if specified
-        if self.remove_docstrings:
-            source_code = self.remove_docstring(source_code, tree)
-
-        # Add the processed code to the corresponding list in the visitor
-        self.visitor.function_source_codes.append(source_code)
-
-    def normalize_file(self, file_path: str):
-        """This method is called for every file in the directory.
-        It does the following:
-        1. Runs flake8 on the file
-        if flake8 returns a non-zero exit code, it means the file has a syntax error
-
-
-        """
-        result = subprocess.run(
-            ["black", file_path], capture_output=True
-        )
-
-        if result.returncode != 0:
-            print(f"Skipping file with syntax error: {file_path}")
-            print(result.stderr.decode("utf-8"))
-            return
-
-    def process_directory(
-        self,
-    ) -> Tuple[List[str], List[str], List[cst.FunctionDef], List[cst.ClassDef]]:
-        """This method is called for every directory.
-        It does the following:
-        1. Gets all the python files in the directory
-        2. Processes each file
-        3. Returns the list of function source codes, class source codes, function nodes, and class nodes
-        """
-
+    def process_directory(self) -> List[Dict[str, Any]]:
         python_files = self.get_files_with_extension(".py")
+        results = []
 
         for file_path in python_files:
+            if file_path.split('/')[-1] in ["__init__.py"]:
+                continue
             if self.lint_code:
                 self.normalize_file(file_path)
-            self._process_file(file_path)
+            try:
+                with open(file_path, "r", encoding="utf-8") as file:
+                    source_code = file.read()
 
-        result_dict = {
-            "function_source_codes": self.visitor.function_source_codes,
-            "function_nodes": self.visitor.function_nodes,
-            "class_source_codes": self.visitor.class_source_codes,
-            "class_nodes": self.visitor.class_nodes,
-            "file_map": self.visitor.filename_map,
-            "full_nodes": self.visitor.full_node_list,
-            "full_source": self.visitor.full_source_list,
-        }
+                tree = cst.parse_module(source_code)
+                if self.remove_docstrings:
+                    tree = self.remove_docstring(tree)
 
-        return result_dict
+                results.append({
+                    'code': tree.code,
+                    'cst_tree': tree,
+                    'file_name': file_path
+                })
+
+            except Exception as e:  # Catch exceptions related to file reading or CST parsing
+                print(f"Error processing {file_path}: {e}")
+        return results
+
+    def normalize_file(self, file_path: str):
+        subprocess.run(["black", file_path], capture_output=True)
+
+def extract_values_python(
+    directory_path: str,
+    remove_docstrings: bool = False,
+    lint_code: bool = False,
+    resolution: str = "module",
+) -> List[Dict[str, Any]]:
+    parser = PythonParser(
+        directory_path=directory_path,
+        remove_docstrings=remove_docstrings,
+        lint_code=lint_code
+    )
+    processed_files = parser.process_directory()
+
+    results = []
+    for item in processed_files:
+        match resolution:
+            case "module":
+                # Directly append the processed file data for 'module' resolution
+                results.append({
+                    'code': item['code'],
+                    'cst_tree': str(item['cst_tree']),
+                    'file_name': item['file_name']
+                })
+            case "function" | "class":
+                # Logic to extract specific nodes ('function' or 'class') from 'cst_tree' if needed
+                visitor = FunctionAndClassVisitor()
+                cst_tree = item['cst_tree']
+                cst_tree.visit(visitor)
+                if resolution == "function":
+                    for function_node in visitor.function_nodes:
+                        function_source_code = cst.Module([]).code_for_node(function_node)
+                        results.append({
+                            'code': function_source_code,
+                            'cst_tree': str(function_node),
+                            'file_name': item['file_name']
+                        })
+                elif resolution == "class":
+                    for class_node in visitor.class_nodes:
+                        class_source_code = cst.Module([]).code_for_node(class_node)
+                        results.append({
+                            'code': class_source_code,
+                            'cst_tree': str(class_node),
+                            'file_name': item['file_name']
+                        })
+    return results

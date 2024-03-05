@@ -2,6 +2,7 @@ import codecs
 import glob
 import os
 from typing import Dict, List, Tuple
+import difflib
 
 from PredCST.processors.parsers.python_parser import PythonParser
 
@@ -32,44 +33,14 @@ def traverse_and_collect_rtd(directory):
     return data
 
 
-def extract_values_python(
-    directory_path: str,
-    remove_docstrings: bool = False,
-    lint_code:bool = True,
-    resolution: str = "function",
-) -> Tuple[List[str], List[Dict[str, str]]]:
-    values = []
-    context = []
 
-    parser = PythonParser(
-        directory_path=directory_path,
-        remove_docstrings=remove_docstrings,
-        lint_code=lint_code
-    )
-
-    results_dict = parser.process_directory()
-
-    if resolution == "function":
-        source_codes = results_dict["function_source_codes"]
-        nodes = results_dict["function_nodes"]
-    elif resolution == "class":
-        source_codes = results_dict["class_source_codes"]
-        nodes = results_dict["class_nodes"]
-    elif resolution == "both":
-        source_codes = results_dict["full_source"]
-        nodes = results_dict["full_nodes"]
-    else:
-        raise ValueError(f"Invalid resolution: {resolution}")
-    if resolution in ["function", "class"]:
-        for source_code, node in zip(source_codes, nodes):
-            values.append(source_code)
-            context.append({"libcst tree": str(node)})
-    elif resolution == "both":
-        for source_code, node, filename in zip(
-            source_codes, nodes, results_dict["file_map"]
-        ):
-            values.append(source_code)
-            context.append({"libcst tree": str(node), "filename": filename})
-    else:
-        raise ValueError(f"Invalid resolution: {resolution}")
-    return values, context
+def print_code_diff(code1, code2):
+    # Split the code into lines for a detailed comparison
+    lines1 = code1.splitlines(keepends=True)
+    lines2 = code2.splitlines(keepends=True)
+    
+    # Generate the diff using difflib
+    diff = difflib.unified_diff(lines1, lines2, fromfile="code1.py", tofile="code2.py")
+    
+    # Print the diff
+    print(''.join(diff))

@@ -5,15 +5,14 @@ import libcst as cst
 import polars as pl
 
 
-from PredCST.utils.pythonparser import (
+from PredCST.processors.parsers.python_parser import (
     extract_values_python,
-
 )
 from PredCST.processors.parsers.visitors.node_type_counters import *
 from PredCST.processors.parsers.visitors.operator_counters import *
 
 
-class CodeFrame():
+class CodeFrame:
     def __init__(
         self,
         df: pl.DataFrame,
@@ -28,7 +27,6 @@ class CodeFrame():
         self.save_path = save_path
         self.save_dir = f"{self.save_path}/{self.name}"
 
-
     def __getattr__(self, name: str):
         if "df" in self.__dict__:
             return getattr(self.df.lazy(), name)
@@ -42,7 +40,6 @@ class CodeFrame():
             os.makedirs(self.save_dir)
         self.full_save_path = f"{self.save_path}/{self.name}/{self.name}.parquet"
         self.df.write_parquet(self.full_save_path)
-
 
     @classmethod
     def load(cls, frame_path: str, name: str):
@@ -100,26 +97,20 @@ class CodeFrame():
         directory_path: str,
         value_column: str,
         remove_docstrings: bool = False,
-        lint_code: bool = True,
-        resolution: str = "both",
+        lint_code: bool = False,
+        resolution: str = "module",
         context_columns: Optional[List[str]] = None,
         name: str = "code_frame",
         save_path: Optional[str] = "./storage",
-
     ) -> "CodeFrame":
-        values, context = extract_values_python(
-            directory_path,remove_docstrings,lint_code, resolution
+        values = extract_values_python(
+            directory_path, remove_docstrings, lint_code, resolution
         )
         # convert retrieved data to polars dataframe
-        df = pl.DataFrame({value_column: values})
-        context_df = pl.DataFrame(context)
-        # merge context columns with dataframe
-        df = pl.concat([df, context_df], how="horizontal")
+        df = pl.DataFrame({value_column: values}).unnest(value_column)
         kwargs = {
             "context_columns": context_columns,
             "name": name,
             "save_path": save_path,
         }
         return cls(df, **kwargs)
-
-

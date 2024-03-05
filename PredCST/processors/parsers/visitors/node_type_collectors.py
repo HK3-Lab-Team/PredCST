@@ -1,5 +1,6 @@
 import libcst as cst
 
+
 class DocstringCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -8,7 +9,9 @@ class DocstringCollector(cst.CSTVisitor):
     def visit_Module(self, node: cst.Module) -> bool:
         if node.body and isinstance(node.body[0].body, cst.SimpleStatementLine):
             for stmt in node.body[0].body.body:
-                if isinstance(stmt, cst.Expr) and isinstance(stmt.value, cst.SimpleString):
+                if isinstance(stmt, cst.Expr) and isinstance(
+                    stmt.value, cst.SimpleString
+                ):
                     self.docstrings.append(stmt.value.value)
         return True
 
@@ -28,6 +31,7 @@ class DocstringCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.docstrings
 
+
 class FunctionCallCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -42,6 +46,7 @@ class FunctionCallCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.function_calls
+
 
 class ArgumentTypeCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -79,6 +84,7 @@ class ArgumentTypeCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.argument_types
 
+
 class ImportCollector(cst.CSTVisitor):
     def __init__(self, filename: str):
         with open(filename, "r") as file:
@@ -101,6 +107,7 @@ class ImportCollector(cst.CSTVisitor):
         import_code = [import_statement.code for import_statement in self.imports]
         return import_code
 
+
 class IfStatementCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -114,6 +121,7 @@ class IfStatementCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.if_statements
 
+
 class BaseCompoundStatementCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -126,7 +134,8 @@ class BaseCompoundStatementCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.compound_statements
-    
+
+
 class ForLoopCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -140,6 +149,7 @@ class ForLoopCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.for_loops
 
+
 class WhileLoopCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -152,7 +162,8 @@ class WhileLoopCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.while_loops
-    
+
+
 class TryExceptCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -165,6 +176,7 @@ class TryExceptCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.try_excepts
+
 
 class WithCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -179,6 +191,7 @@ class WithCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.withs
 
+
 class VariableDeclarationCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -192,6 +205,7 @@ class VariableDeclarationCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.variable_declarations
 
+
 class ListComprehensionCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -204,6 +218,7 @@ class ListComprehensionCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.list_comprehensions
+
 
 class DictComprehensionCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -233,6 +248,7 @@ class SetComprehensionCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.set_comprehensions
 
+
 # Generator Expression Collector
 class GeneratorExpressionCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -246,6 +262,7 @@ class GeneratorExpressionCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.generator_expressions
+
 
 # Yield Statement Collector
 class YieldCollector(cst.CSTVisitor):
@@ -276,6 +293,7 @@ class ReturnCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.returns
 
+
 # Raise Statement Collector
 class RaiseCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -289,6 +307,7 @@ class RaiseCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.raises
+
 
 # Assert Statement Collector
 class AssertCollector(cst.CSTVisitor):
@@ -304,6 +323,7 @@ class AssertCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.asserts
 
+
 # Break Statement Collector
 class BreakCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -318,6 +338,7 @@ class BreakCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.breaks
 
+
 # Continue Statement Collector
 class ContinueCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -331,6 +352,7 @@ class ContinueCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.continues
+
 
 # Pass Statement Collector
 class PassCollector(cst.CSTVisitor):
@@ -347,7 +369,6 @@ class PassCollector(cst.CSTVisitor):
         return self.passes
 
 
-
 # With Statement Collector
 class WithStatementCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -361,6 +382,7 @@ class WithStatementCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.with_statements
+
 
 # Try Statement Collector
 class TryStatementCollector(cst.CSTVisitor):
@@ -376,6 +398,7 @@ class TryStatementCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.try_statements
 
+
 # Except Clause Collector
 class ExceptClauseCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -389,6 +412,7 @@ class ExceptClauseCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.except_clauses
+
 
 # Lambda Function Collector
 class LambdaFunctionCollector(cst.CSTVisitor):
@@ -404,6 +428,7 @@ class LambdaFunctionCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.lambda_functions
 
+
 # Global Statement Collector
 class GlobalStatementCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -417,6 +442,7 @@ class GlobalStatementCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.global_statements
+
 
 # Nonlocal Statement Collector
 class NonlocalStatementCollector(cst.CSTVisitor):

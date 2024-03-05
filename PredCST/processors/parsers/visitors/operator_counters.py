@@ -64,6 +64,7 @@ class BitInvertOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_invert_operator_count
 
+
 class MinusOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -76,6 +77,7 @@ class MinusOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.minus_operator_count
+
 
 class NotOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -90,6 +92,7 @@ class NotOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.not_operator_count
 
+
 class PlusOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -102,6 +105,7 @@ class PlusOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.plus_operator_count
+
 
 # Boolean Operators
 class AndOperatorCounter(cst.CSTVisitor):
@@ -117,6 +121,7 @@ class AndOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.and_operator_count
 
+
 class OrOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -129,6 +134,7 @@ class OrOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.or_operator_count
+
 
 # Binary Operators
 class AddOperatorCounter(cst.CSTVisitor):
@@ -144,6 +150,7 @@ class AddOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.add_operator_count
 
+
 # Binary Operators
 class BitAndOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -158,6 +165,7 @@ class BitAndOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_and_operator_count
 
+
 class BitOrOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -170,6 +178,7 @@ class BitOrOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_or_operator_count
+
 
 class BitXorOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -184,6 +193,7 @@ class BitXorOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_xor_operator_count
 
+
 class DivideOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -196,6 +206,7 @@ class DivideOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.divide_operator_count
+
 
 class FloorDivideOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -210,6 +221,7 @@ class FloorDivideOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.floor_divide_operator_count
 
+
 class LeftShiftOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -222,6 +234,7 @@ class LeftShiftOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.left_shift_operator_count
+
 
 class MatrixMultiplyOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -236,6 +249,7 @@ class MatrixMultiplyOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.matrix_multiply_operator_count
 
+
 class ModuloOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -248,6 +262,7 @@ class ModuloOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.modulo_operator_count
+
 
 class MultiplyOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -262,6 +277,7 @@ class MultiplyOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.multiply_operator_count
 
+
 class PowerOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -275,6 +291,7 @@ class PowerOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.power_operator_count
 
+
 class RightShiftOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -287,6 +304,7 @@ class RightShiftOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.right_shift_operator_count
+
 
 class SubtractOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -316,6 +334,7 @@ class EqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.equal_operator_count
 
+
 # Comparison Operators
 class EqualOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -330,6 +349,7 @@ class EqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.equal_operator_count
 
+
 class GreaterThanOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -342,6 +362,7 @@ class GreaterThanOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.greater_than_operator_count
+
 
 class GreaterThanEqualOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -356,6 +377,7 @@ class GreaterThanEqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.greater_than_equal_operator_count
 
+
 class InOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -368,6 +390,7 @@ class InOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.in_operator_count
+
 
 class IsOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -382,6 +405,7 @@ class IsOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.is_operator_count
 
+
 class LessThanOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -394,6 +418,7 @@ class LessThanOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.less_than_operator_count
+
 
 class LessThanEqualOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -408,6 +433,7 @@ class LessThanEqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.less_than_equal_operator_count
 
+
 class NotEqualOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -421,6 +447,7 @@ class NotEqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.not_equal_operator_count
 
+
 class IsNotOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -433,6 +460,7 @@ class IsNotOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.is_not_operator_count
+
 
 class NotInOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -462,6 +490,7 @@ class AddAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.add_assign_operator_count
 
+
 class BitAndAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -474,6 +503,7 @@ class BitAndAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_and_assign_operator_count
+
 
 class BitOrAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -488,6 +518,7 @@ class BitOrAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_or_assign_operator_count
 
+
 class BitXorAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -500,6 +531,7 @@ class BitXorAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_xor_assign_operator_count
+
 
 class DivideAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -514,6 +546,7 @@ class DivideAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.divide_assign_operator_count
 
+
 class FloorDivideAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -526,6 +559,7 @@ class FloorDivideAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.floor_divide_assign_operator_count
+
 
 class LeftShiftAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -540,6 +574,7 @@ class LeftShiftAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.left_shift_assign_operator_count
 
+
 class MatrixMultiplyAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -552,6 +587,7 @@ class MatrixMultiplyAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.matrix_multiply_assign_operator_count
+
 
 class ModuloAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -566,6 +602,7 @@ class ModuloAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.modulo_assign_operator_count
 
+
 class MultiplyAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -578,6 +615,7 @@ class MultiplyAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.multiply_assign_operator_count
+
 
 class PowerAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -592,6 +630,7 @@ class PowerAssignOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.power_assign_operator_count
 
+
 class RightShiftAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -604,6 +643,7 @@ class RightShiftAssignOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.right_shift_assign_operator_count
+
 
 class SubtractAssignOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -633,6 +673,7 @@ class AssignEqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.assign_equal_operator_count
 
+
 # Miscellaneous Operators
 class AssignEqualOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -647,6 +688,7 @@ class AssignEqualOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.assign_equal_operator_count
 
+
 class ColonOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -659,6 +701,7 @@ class ColonOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.colon_operator_count
+
 
 class CommaOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -673,6 +716,7 @@ class CommaOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.comma_operator_count
 
+
 class DotOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -686,6 +730,7 @@ class DotOperatorCounter(cst.CSTVisitor):
         self.module.visit(self)
         return self.dot_operator_count
 
+
 class ImportStarOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -698,6 +743,7 @@ class ImportStarOperatorCounter(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.import_star_operator_count
+
 
 class SemicolonOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):

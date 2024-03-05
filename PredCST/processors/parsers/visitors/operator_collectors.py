@@ -1,5 +1,6 @@
 import libcst as cst
 
+
 # Unary Operators
 class UnaryOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -7,14 +8,19 @@ class UnaryOperatorCollector(cst.CSTVisitor):
         self.unary_operators = []
 
     def visit_UnaryOperation(self, node: cst.UnaryOperation) -> bool:
-        if isinstance(node.operator, cst.BitInvert) or isinstance(node.operator, cst.Minus) or \
-                isinstance(node.operator, cst.Not) or isinstance(node.operator, cst.Plus):
+        if (
+            isinstance(node.operator, cst.BitInvert)
+            or isinstance(node.operator, cst.Minus)
+            or isinstance(node.operator, cst.Not)
+            or isinstance(node.operator, cst.Plus)
+        ):
             self.unary_operators.append(node.operator.__class__.__name__)
         return True
 
     def collect(self):
         self.module.visit(self)
         return self.unary_operators
+
 
 # Boolean Operators
 class BooleanOperatorCollector(cst.CSTVisitor):
@@ -31,6 +37,7 @@ class BooleanOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.boolean_operators
 
+
 # Binary Operators
 class BinaryOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -38,19 +45,28 @@ class BinaryOperatorCollector(cst.CSTVisitor):
         self.binary_operators = []
 
     def visit_BinaryOperation(self, node: cst.BinaryOperation) -> bool:
-        if isinstance(node.operator, cst.Add) or isinstance(node.operator, cst.BitAnd) or \
-                isinstance(node.operator, cst.BitOr) or isinstance(node.operator, cst.BitXor) or \
-                isinstance(node.operator, cst.Divide) or isinstance(node.operator, cst.FloorDivide) or \
-                isinstance(node.operator, cst.LeftShift) or isinstance(node.operator, cst.MatrixMultiply) or \
-                isinstance(node.operator, cst.Modulo) or isinstance(node.operator, cst.Multiply) or \
-                isinstance(node.operator, cst.Power) or isinstance(node.operator, cst.RightShift) or \
-                isinstance(node.operator, cst.Subtract):
+        if (
+            isinstance(node.operator, cst.Add)
+            or isinstance(node.operator, cst.BitAnd)
+            or isinstance(node.operator, cst.BitOr)
+            or isinstance(node.operator, cst.BitXor)
+            or isinstance(node.operator, cst.Divide)
+            or isinstance(node.operator, cst.FloorDivide)
+            or isinstance(node.operator, cst.LeftShift)
+            or isinstance(node.operator, cst.MatrixMultiply)
+            or isinstance(node.operator, cst.Modulo)
+            or isinstance(node.operator, cst.Multiply)
+            or isinstance(node.operator, cst.Power)
+            or isinstance(node.operator, cst.RightShift)
+            or isinstance(node.operator, cst.Subtract)
+        ):
             self.binary_operators.append(node.operator.__class__.__name__)
         return True
 
     def collect(self):
         self.module.visit(self)
         return self.binary_operators
+
 
 # Comparison Operators
 class ComparisonOperatorCollector(cst.CSTVisitor):
@@ -60,17 +76,25 @@ class ComparisonOperatorCollector(cst.CSTVisitor):
 
     def visit_Comparison(self, node: cst.Comparison) -> bool:
         for operator in node.operators:
-            if isinstance(operator, cst.Equal) or isinstance(operator, cst.GreaterThan) or \
-                    isinstance(operator, cst.GreaterThanEqual) or isinstance(operator, cst.In) or \
-                    isinstance(operator, cst.Is) or isinstance(operator, cst.LessThan) or \
-                    isinstance(operator, cst.LessThanEqual) or isinstance(operator, cst.NotEqual) or \
-                    isinstance(operator, cst.IsNot) or isinstance(operator, cst.NotIn):
+            if (
+                isinstance(operator, cst.Equal)
+                or isinstance(operator, cst.GreaterThan)
+                or isinstance(operator, cst.GreaterThanEqual)
+                or isinstance(operator, cst.In)
+                or isinstance(operator, cst.Is)
+                or isinstance(operator, cst.LessThan)
+                or isinstance(operator, cst.LessThanEqual)
+                or isinstance(operator, cst.NotEqual)
+                or isinstance(operator, cst.IsNot)
+                or isinstance(operator, cst.NotIn)
+            ):
                 self.comparison_operators.append(operator.__class__.__name__)
         return True
 
     def collect(self):
         self.module.visit(self)
         return self.comparison_operators
+
 
 # Augmented Assignment Operators
 class AugmentedAssignmentOperatorCollector(cst.CSTVisitor):
@@ -79,19 +103,28 @@ class AugmentedAssignmentOperatorCollector(cst.CSTVisitor):
         self.augmented_assignment_operators = []
 
     def visit_AugAssign(self, node: cst.AugAssign) -> bool:
-        if isinstance(node.operator, cst.AddAssign) or isinstance(node.operator, cst.BitAndAssign) or \
-                isinstance(node.operator, cst.BitOrAssign) or isinstance(node.operator, cst.BitXorAssign) or \
-                isinstance(node.operator, cst.DivideAssign) or isinstance(node.operator, cst.FloorDivideAssign) or \
-                isinstance(node.operator, cst.LeftShiftAssign) or isinstance(node.operator, cst.MatrixMultiplyAssign) or \
-                isinstance(node.operator, cst.ModuloAssign) or isinstance(node.operator, cst.MultiplyAssign) or \
-                isinstance(node.operator, cst.PowerAssign) or isinstance(node.operator, cst.RightShiftAssign) or \
-                isinstance(node.operator, cst.SubtractAssign):
+        if (
+            isinstance(node.operator, cst.AddAssign)
+            or isinstance(node.operator, cst.BitAndAssign)
+            or isinstance(node.operator, cst.BitOrAssign)
+            or isinstance(node.operator, cst.BitXorAssign)
+            or isinstance(node.operator, cst.DivideAssign)
+            or isinstance(node.operator, cst.FloorDivideAssign)
+            or isinstance(node.operator, cst.LeftShiftAssign)
+            or isinstance(node.operator, cst.MatrixMultiplyAssign)
+            or isinstance(node.operator, cst.ModuloAssign)
+            or isinstance(node.operator, cst.MultiplyAssign)
+            or isinstance(node.operator, cst.PowerAssign)
+            or isinstance(node.operator, cst.RightShiftAssign)
+            or isinstance(node.operator, cst.SubtractAssign)
+        ):
             self.augmented_assignment_operators.append(node.operator.__class__.__name__)
         return True
 
     def collect(self):
         self.module.visit(self)
         return self.augmented_assignment_operators
+
 
 # Miscellaneous Operators
 class MiscellaneousOperatorCollector(cst.CSTVisitor):
@@ -142,6 +175,7 @@ class BitInvertOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_invert_count
 
+
 class MinusOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -155,6 +189,7 @@ class MinusOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.minus_count
 
+
 class NotOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -167,6 +202,7 @@ class NotOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.not_count
+
 
 class PlusOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -196,6 +232,7 @@ class AndOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.and_count
 
+
 class OrOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -224,6 +261,7 @@ class AddOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.add_count
 
+
 class BitAndOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -236,6 +274,7 @@ class BitAndOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_and_count
+
 
 class BitOrOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -250,6 +289,7 @@ class BitOrOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_or_count
 
+
 class BitXorOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -262,6 +302,7 @@ class BitXorOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_xor_count
+
 
 class DivideOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -276,6 +317,7 @@ class DivideOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.divide_count
 
+
 class FloorDivideOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -288,6 +330,7 @@ class FloorDivideOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.floor_divide_count
+
 
 class LeftShiftOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -302,6 +345,7 @@ class LeftShiftOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.left_shift_count
 
+
 class MatrixMultiplyOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -314,6 +358,7 @@ class MatrixMultiplyOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.matrix_multiply_count
+
 
 class ModuloOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -328,6 +373,7 @@ class ModuloOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.modulo_count
 
+
 class MultiplyOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -340,6 +386,7 @@ class MultiplyOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.multiply_count
+
 
 class PowerOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -354,6 +401,7 @@ class PowerOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.power_count
 
+
 class RightShiftOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -366,6 +414,7 @@ class RightShiftOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.right_shift_count
+
 
 class SubtractOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -395,6 +444,7 @@ class EqualOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.equal_count
 
+
 class GreaterThanOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -407,6 +457,7 @@ class GreaterThanOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.greater_than_count
+
 
 # ... continue with other comparison operators
 
@@ -425,17 +476,7 @@ class AddAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.add_assign_count
 
-class BitAndAssignOperatorCollector(cst.CSTVisitor):
-    def __init__(self, code: str):
-        self.module = cst.parse_module(code)
-        self.bit_and_assign_count = []
 
-    def visit_BitAndAssign(self, node: cst.BitAndAssign) -> bool:
-        self.bit_and_assign_count.append(cst.Module([node]).code)
-        return True
-    def collect(self):
-        self.module.visit(self)
-        return self.bit_and_assign_count
 class BitAndAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -448,6 +489,21 @@ class BitAndAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_and_assign_count
+
+
+class BitAndAssignOperatorCollector(cst.CSTVisitor):
+    def __init__(self, code: str):
+        self.module = cst.parse_module(code)
+        self.bit_and_assign_count = []
+
+    def visit_BitAndAssign(self, node: cst.BitAndAssign) -> bool:
+        self.bit_and_assign_count.append(cst.Module([node]).code)
+        return True
+
+    def collect(self):
+        self.module.visit(self)
+        return self.bit_and_assign_count
+
 
 class BitOrAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -462,6 +518,7 @@ class BitOrAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.bit_or_assign_count
 
+
 class BitXorAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -474,6 +531,7 @@ class BitXorAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.bit_xor_assign_count
+
 
 class DivideAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -488,6 +546,7 @@ class DivideAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.divide_assign_count
 
+
 class FloorDivideAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -500,6 +559,7 @@ class FloorDivideAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.floor_divide_assign_count
+
 
 class LeftShiftAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -514,6 +574,7 @@ class LeftShiftAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.left_shift_assign_count
 
+
 class MatrixMultiplyAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -526,6 +587,7 @@ class MatrixMultiplyAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.matrix_multiply_assign_count
+
 
 class ModuloAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -540,6 +602,7 @@ class ModuloAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.modulo_assign_count
 
+
 class MultiplyAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -552,6 +615,7 @@ class MultiplyAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.multiply_assign_count
+
 
 class PowerAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -566,18 +630,6 @@ class PowerAssignOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.power_assign_count
 
-class RightShiftAssignOperatorCollector(cst.CSTVisitor):
-    def __init__(self, code: str):
-        self.module = cst.parse_module(code)
-        self.right_shift_assign_count = []
-
-    def visit_RightShiftAssign(self, node: cst.RightShiftAssign) -> bool:
-        self.right_shift_assign_count.append(cst.Module([node]).code)
-        return True
-
-    def collect(self):
-        self.module.visit(self)
-        return self.right_shift_assign_count
 
 class RightShiftAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -591,6 +643,21 @@ class RightShiftAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.right_shift_assign_count
+
+
+class RightShiftAssignOperatorCollector(cst.CSTVisitor):
+    def __init__(self, code: str):
+        self.module = cst.parse_module(code)
+        self.right_shift_assign_count = []
+
+    def visit_RightShiftAssign(self, node: cst.RightShiftAssign) -> bool:
+        self.right_shift_assign_count.append(cst.Module([node]).code)
+        return True
+
+    def collect(self):
+        self.module.visit(self)
+        return self.right_shift_assign_count
+
 
 class SubtractAssignOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -604,6 +671,7 @@ class SubtractAssignOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.subtract_assign_count
+
 
 # Miscellaneous Operators
 class AssignEqualOperatorCollector(cst.CSTVisitor):
@@ -619,6 +687,7 @@ class AssignEqualOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.assign_equal_count
 
+
 class ColonOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -631,6 +700,7 @@ class ColonOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.colon_count
+
 
 class CommaOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
@@ -645,6 +715,7 @@ class CommaOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.comma_count
 
+
 class DotOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -658,6 +729,7 @@ class DotOperatorCollector(cst.CSTVisitor):
         self.module.visit(self)
         return self.dot_count
 
+
 class ImportStarOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)
@@ -670,6 +742,7 @@ class ImportStarOperatorCollector(cst.CSTVisitor):
     def collect(self):
         self.module.visit(self)
         return self.import_star_count
+
 
 class SemicolonOperatorCollector(cst.CSTVisitor):
     def __init__(self, code: str):

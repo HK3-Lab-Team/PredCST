@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import libcst as cst
 import polars as pl
-
+from tqdm import tqdm
 
 from PredCST.processors.parsers.python_parser import (
     extract_values_python,
@@ -16,16 +16,20 @@ class CodeFrame:
     def __init__(
         self,
         df: pl.DataFrame,
-        context_columns: Optional[List[str]] = None,
+        value_column: str = "code",
         name: str = "code_frame",
         save_path: Optional[str] = "./storage",
+        resolution: str = "module"
     ):
 
         self.df = df
-        self.context_columns = context_columns
+        self.value_column = value_column
         self.name = name
         self.save_path = save_path
         self.save_dir = f"{self.save_path}/{self.name}"
+        self.resolution = resolution
+        if self.resolution == "all":
+            self.code_triage()
 
     def __getattr__(self, name: str):
         if "df" in self.__dict__:
@@ -33,6 +37,11 @@ class CodeFrame:
         raise AttributeError(
             f"{self.__class__.__name__} object has no attribute {name}"
         )
+    def code_triage(self):
+        self.modules = self.df.filter(pl.col("type") == 'module')
+        self.functions = self.df.filter(pl.col("type") == 'function')
+        self.classes = self.df.filter(pl.col("type") == 'class')
+
 
     def save(self):
         # create dir in storage if not exists
@@ -63,32 +72,34 @@ class CodeFrame:
 
         # Iterate over the specified column
         new_values = []
-        for code in self.df[column_name]:
+        for code in tqdm(self.df[column_name], desc="Processing codes"):
             # Create a visitor and apply it to the code
             visitor = visitor_class(code)
             new_value = visitor.collect()
             new_values.append(new_value)
         # Generate new column
-        new_column_name = f"{column_name}_{new_column_prefix}|{visitor_class.__name__}"
+        new_column_name = f"{column_name}_{new_column_prefix}"
         new_series = pl.Series(new_column_name, new_values)
         self.df = self.df.with_columns(new_series)
 
         return self
 
     def count_node_types(self, column_name: str, new_column_prefix: str = "node_count"):
-        for node_type_counter in NODETYPE_COUNTERS:
-            self.apply_visitor_to_column(
-                column_name, globals()[node_type_counter], new_column_prefix
-            )
+        self.apply_visitor_to_column(
+            column_name, NodeTypeCounter, new_column_prefix
+        )
+        new_column_name = f"{column_name}_{new_column_prefix}"
+        self.df = self.df.unnest(new_column_name)
         return self
 
     def count_operators(
         self, column_name: str, new_column_prefix: str = "operator_count"
     ):
-        for operator_counter in OPERATOR_COUNTERS:
-            self.apply_visitor_to_column(
-                column_name, globals()[operator_counter], new_column_prefix
-            )
+        self.apply_visitor_to_column(
+            column_name, UnifiedOperatorCounter, new_column_prefix
+        )
+        new_column_name = f"{column_name}_{new_column_prefix}"
+        self.df.unnest(new_column_name)
         return self
 
     @classmethod
@@ -99,7 +110,7 @@ class CodeFrame:
         remove_docstrings: bool = False,
         lint_code: bool = False,
         resolution: str = "module",
-        context_columns: Optional[List[str]] = None,
+
         name: str = "code_frame",
         save_path: Optional[str] = "./storage",
     ) -> "CodeFrame":
@@ -109,8 +120,9 @@ class CodeFrame:
         # convert retrieved data to polars dataframe
         df = pl.DataFrame({value_column: values}).unnest(value_column)
         kwargs = {
-            "context_columns": context_columns,
+            "value_column": value_column,
             "name": name,
             "save_path": save_path,
+            "resolution": resolution
         }
         return cls(df, **kwargs)

@@ -154,6 +154,7 @@ def extract_values_python(
             case "module":
                 # Directly append the processed file data for 'module' resolution
                 results.append({
+                    'type': 'module',
                     'code': item['code'],
                     'cst_tree': str(item['cst_tree']),
                     'file_name': item['file_name']
@@ -167,6 +168,7 @@ def extract_values_python(
                     for function_node in visitor.function_nodes:
                         function_source_code = cst.Module([]).code_for_node(function_node)
                         results.append({
+                            'type': 'function',
                             'code': function_source_code,
                             'cst_tree': str(function_node),
                             'file_name': item['file_name']
@@ -175,8 +177,39 @@ def extract_values_python(
                     for class_node in visitor.class_nodes:
                         class_source_code = cst.Module([]).code_for_node(class_node)
                         results.append({
+                            'type': 'class',
                             'code': class_source_code,
                             'cst_tree': str(class_node),
                             'file_name': item['file_name']
                         })
+            case "all":
+                # Append module-level data
+                results.append({
+                    'type': 'module',
+                    'code': item['code'],
+                    'cst_tree': str(item['cst_tree']),
+                    'file_name': item['file_name']
+                })
+                # Extract and append function and class-level data
+                visitor = FunctionAndClassVisitor()
+                cst_tree = item['cst_tree']
+                cst_tree.visit(visitor)
+                for function_node in visitor.function_nodes:
+                    function_source_code = cst.Module([]).code_for_node(function_node)
+                    results.append({
+                        'type': 'function',
+                        'code': function_source_code,
+                        'cst_tree': str(function_node),
+                        'file_name': item['file_name']
+                    })
+                for class_node in visitor.class_nodes:
+                    class_source_code = cst.Module([]).code_for_node(class_node)
+                    results.append({
+                        'type': 'class',
+                        'code': class_source_code,
+                        'cst_tree': str(class_node),
+                        'file_name': item['file_name']
+                    })
+            case _:
+                raise Exception(f"Unsupported resolution: {resolution}")
     return results

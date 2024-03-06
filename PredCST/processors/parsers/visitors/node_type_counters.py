@@ -29,6 +29,138 @@ NODETYPE_COUNTERS = [
 ]
 
 
+class NodeTypeCounter(cst.CSTVisitor):
+    def __init__(self, code:str):
+        # Initialize counters for each node type
+        self.counts = {
+            'FunctionCall': 0,
+            'Argument': 0,
+            'Import': 0,
+            'If': 0,
+            'BaseCompoundStatement': 0,
+            'For': 0,
+            'While': 0,
+            'Try': 0,
+            'With': 0,
+            'Lambda': 0,
+            'Global': 0,
+            'Nonlocal': 0,
+            'ListComprehension': 0,
+            'DictComprehension': 0,
+            'SetComprehension': 0,
+            'GeneratorExpression': 0,
+            'Yield': 0,
+            'Await': 0,
+            'Return': 0,
+            'Break': 0,
+            'Continue': 0,
+            'Raise': 0,
+            'Assert': 0,
+            'Pass': 0
+        }
+        self.module = cst.parse_module(code)
+
+    def visit_Call(self, node: cst.Call):
+        self.counts['FunctionCall'] += 1
+        return True # Continue traversing the tree
+
+    def visit_Param(self, node: cst.Param):
+        self.counts['Argument'] += 1
+        return True
+
+    def visit_Import(self, node: cst.Import):
+        self.counts['Import'] += 1
+        return True
+
+    def visit_ImportFrom(self, node: cst.ImportFrom):
+        self.counts['Import'] += 1
+        return True
+
+    def visit_If(self, node: cst.If):
+        self.counts['If'] += 1
+        return True
+
+    def visit_For(self, node: cst.For):
+        self.counts['For'] += 1
+        return True
+
+    def visit_While(self, node: cst.While):
+        self.counts['While'] += 1
+        return True
+
+    def visit_Try(self, node: cst.Try):
+        self.counts['Try'] += 1
+        return True
+
+    def visit_With(self, node: cst.With):
+        self.counts['With'] += 1
+        return True
+
+    def visit_Lambda(self, node: cst.Lambda):
+        self.counts['Lambda'] += 1
+        return True
+
+    def visit_Global(self, node: cst.Global):
+        self.counts['Global'] += 1
+        return True
+
+    def visit_Nonlocal(self, node: cst.Nonlocal):
+        self.counts['Nonlocal'] += 1
+        return True
+
+    def visit_ListComp(self, node: cst.ListComp):
+        self.counts['ListComprehension'] += 1
+        return True
+
+    def visit_DictComp(self, node: cst.DictComp):
+        self.counts['DictComprehension'] += 1
+        return True
+
+    def visit_SetComp(self, node: cst.SetComp):
+        self.counts['SetComprehension'] += 1
+        return True
+
+    def visit_GeneratorExp(self, node: cst.GeneratorExp):
+        self.counts['GeneratorExpression'] += 1
+        return True
+
+    def visit_Yield(self, node: cst.Yield):
+        self.counts['Yield'] += 1
+        return True
+
+    def visit_Await(self, node: cst.Await):
+        self.counts['Await'] += 1
+        return True
+
+    def visit_Return(self, node: cst.Return):
+        self.counts['Return'] += 1
+        return True
+
+    def visit_Break(self, node: cst.Break):
+        self.counts['Break'] += 1
+        return True
+
+    def visit_Continue(self, node: cst.Continue):
+        self.counts['Continue'] += 1
+        return True
+
+    def visit_Raise(self, node: cst.Raise):
+        self.counts['Raise'] += 1
+        return True
+
+    def visit_Assert(self, node: cst.Assert):
+        self.counts['Assert'] += 1
+        return True
+
+    def visit_Pass(self, node: cst.Pass):
+        self.counts['Pass'] += 1
+        return True
+
+    def collect(self):
+        self.module.visit(self)
+        return self.counts
+
+
 class FunctionCallCounter(cst.CSTVisitor):
     def __init__(self, code: str):
         self.module = cst.parse_module(code)

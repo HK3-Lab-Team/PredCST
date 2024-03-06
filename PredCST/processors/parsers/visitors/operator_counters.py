@@ -50,6 +50,77 @@ OPERATOR_COUNTERS = [
 ]
 
 
+import libcst as cst
+
+class UnifiedOperatorCounter(cst.CSTVisitor):
+    def __init__(self, code:str):
+        self.counts = {
+            'BitInvert': 0, 'UnaryMinus': 0, 'Not': 0, 'UnaryPlus': 0, 
+            'And': 0, 'Or': 0, 'Add': 0, 'BitAnd': 0, 'BitOr': 0, 
+            'BitXor': 0, 'Divide': 0, 'FloorDivide': 0, 'LeftShift': 0, 
+            'MatrixMultiply': 0, 'Modulo': 0, 'Multiply': 0, 'Power': 0, 
+            'RightShift': 0, 'Subtract': 0, 'Equal': 0, 'GreaterThan': 0, 
+            'GreaterThanEqual': 0, 'In': 0, 'Is': 0, 'LessThan': 0, 
+            'LessThanEqual': 0, 'NotEqual': 0, 'IsNot': 0, 'NotIn': 0, 
+            'AddAssign': 0, 'SubtractAssign': 0, 'MultiplyAssign': 0, 
+            'DivideAssign': 0, 'ModuloAssign': 0, 'AndAssign': 0, 
+            'OrAssign': 0, 'XorAssign': 0, 'LeftShiftAssign': 0, 
+            'RightShiftAssign': 0, 'PowerAssign': 0, 'FloorDivideAssign': 0, 
+            'MatrixMultiplyAssign': 0, 'Colon': 0, 'Comma': 0, 'Dot': 0,
+        }
+        self.module = cst.parse_module(code)
+
+    def visit_UnaryOperation(self, node: cst.UnaryOperation) -> bool:
+        operator = type(node.operator).__name__
+        if operator in self.counts:
+            self.counts[operator] += 1
+        return True
+
+    def visit_BinaryOperation(self, node: cst.BinaryOperation) -> bool:
+        operator = type(node.operator).__name__
+        if operator in self.counts:
+            self.counts[operator] += 1
+        return True
+
+    def visit_BooleanOperation(self, node: cst.BooleanOperation) -> bool:
+        operator = type(node.operator).__name__
+        if operator in self.counts:
+            self.counts[operator] += 1
+        return True
+
+    def visit_Comparison(self, node: cst.Comparison) -> bool:
+        for comparison in node.comparisons:
+            operator = type(comparison.operator).__name__
+            if operator in self.counts:
+                self.counts[operator] += 1
+        return True
+
+    def visit_AugAssign(self, node: cst.AugAssign) -> bool:
+        operator = type(node.operator).__name__ + 'Assign'
+        if operator in self.counts:
+            self.counts[operator] += 1
+        return True
+
+    # For operators like commas, dots, and colons, directly visit the nodes if applicable
+    def visit_Colon(self, node: cst.Colon) -> bool:
+        self.counts['Colon'] += 1
+        return True
+
+    def visit_Comma(self, node):
+        self.counts['Comma'] += 1
+        return True
+
+    def visit_Dot(self, node: cst.Dot) -> bool:
+        self.counts['Dot'] += 1
+        return True
+
+
+    def collect(self):
+        self.module.visit(self)
+        return self.operators_count
+
+
+
 # Unary Operators
 class BitInvertOperatorCounter(cst.CSTVisitor):
     def __init__(self, code: str):

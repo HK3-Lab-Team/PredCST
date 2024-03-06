@@ -117,7 +117,7 @@ class UnifiedOperatorCounter(cst.CSTVisitor):
 
     def collect(self):
         self.module.visit(self)
-        return self.operators_count
+        return self.counts
 
 
 

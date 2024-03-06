@@ -99,7 +99,7 @@ class CodeFrame:
             column_name, UnifiedOperatorCounter, new_column_prefix
         )
         new_column_name = f"{column_name}_{new_column_prefix}"
-        self.df.unnest(new_column_name)
+        self.df = self.df.unnest(new_column_name)
         return self
 
     @classmethod

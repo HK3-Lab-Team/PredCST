@@ -64,7 +64,9 @@ class CodeFrame:
         self,
         column_name: str,
         visitor_class: type,
-        new_column_prefix: Optional[str] = None,
+        df:pl.DataFrame,
+        new_column_prefix: Optional[str] = None
+         
     ):
         # Ensure the visitor_class is a subclass of PythonCodeVisitor
         if not issubclass(visitor_class, cst.CSTVisitor):
@@ -72,7 +74,7 @@ class CodeFrame:
 
         # Iterate over the specified column
         new_values = []
-        for code in tqdm(self.df[column_name], desc="Processing codes"):
+        for code in tqdm(df[column_name], desc="Processing codes"):
             # Create a visitor and apply it to the code
             visitor = visitor_class(code)
             new_value = visitor.collect()
@@ -80,27 +82,52 @@ class CodeFrame:
         # Generate new column
         new_column_name = f"{column_name}_{new_column_prefix}"
         new_series = pl.Series(new_column_name, new_values)
-        self.df = self.df.with_columns(new_series)
+        df = df.with_columns(new_series)
 
         return self
 
-    def count_node_types(self, column_name: str, new_column_prefix: str = "node_count"):
+    def count_node_types(self, column_name: str, new_column_prefix: str = "node_count", resolution:str="all"):
+        match resolution:
+            case "all":
+                df_used = self.df
+            case "modules":
+                df_used = self.modules
+            case "functions":
+                df_used = self.functions
+            case "classes":
+                df_used = self.classes
+            case _:
+                raise ValueError(f"Unknown resolution: {resolution}")
+
         self.apply_visitor_to_column(
             column_name, NodeTypeCounter, new_column_prefix
         )
         new_column_name = f"{column_name}_{new_column_prefix}"
-        self.df = self.df.unnest(new_column_name)
-        return self
+        df_used = df_used.unnest(new_column_name)
+        return df_used
 
     def count_operators(
-        self, column_name: str, new_column_prefix: str = "operator_count"
+        self, column_name: str, new_column_prefix: str = "operator_count", resolution:str="all"
     ):
+        match resolution:
+            case "all":
+                df_used = self.df
+            case "modules":
+                df_used = self.modules
+            case "functions":
+                df_used = self.functions
+            case "classes":
+                df_used = self.classes
+            case _:
+                raise ValueError(f"Unknown resolution: {resolution}")
+
         self.apply_visitor_to_column(
             column_name, UnifiedOperatorCounter, new_column_prefix
         )
         new_column_name = f"{column_name}_{new_column_prefix}"
-        self.df = self.df.unnest(new_column_name)
-        return self
+        df_used = df_used.unnest(new_column_name)
+        return df_used
+
 
     @classmethod
     def from_python(

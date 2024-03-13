@@ -2,19 +2,29 @@ import polars as pl
 import math
 
 def create_dataset(df, ds_size, target_node, node_list):
-    df = df.with_columns(
-        pl.when(df[target_node].gt(0))
-        .then(pl.lit(True))
-        .otherwise(pl.lit(False))
-        .alias("target_node_exists")
-    )
+    
+    df_ = df.drop(['type', 'code', 'type',
+        'cst_tree',
+        'file_name',
+        'modules',
+        'version',
+        'license',
+        'code_token_len',
+        'cst_tree_token_len',
+        'code_text-embedding-3-small_embedding',
+        'code_text-embedding-3-large_embedding',
+        'cst_tree_text-embedding-3-small_embedding'])
+    for column in df_.columns:
+        if isinstance(df_[column].dtype,pl.Int64) and column != 'index':
+            df_ = df_.with_columns((pl.col(column) > 0).alias(column))
+
     fifty_percent = ds_size/2
     
-    target_rows = df.filter(pl.col("target_node_exists")==True)
+    target_rows = df_.filter(pl.col(target_node)==True)
     if target_rows.shape[0] >fifty_percent:
         target_rows = target_rows.sample(fifty_percent)
 
-    other = df.filter(pl.col("target_node_exists")==False)
+    other = df_.filter(pl.col(target_node)==False)
 
     node_list = node_list.filter(pl.col("column") != target_node)
     k_other = node_list.select(pl.col("column")).unique()
@@ -23,12 +33,7 @@ def create_dataset(df, ds_size, target_node, node_list):
 
     without = []
     for o_node in k_other['column'].to_list():
-        temp = other.with_columns(
-                pl.when(other[o_node].gt(0))
-                .then(pl.lit(True))
-                .otherwise(pl.lit(False))
-                .alias("other_node_exists")
-            ).filter(pl.col("other_node_exists")==True).drop("other_node_exists")
+        temp = other.filter(pl.col(o_node)==True)
         try:
             temp = temp.sample(per_sample)
             without.append(temp)
@@ -36,6 +41,11 @@ def create_dataset(df, ds_size, target_node, node_list):
             without.append(temp)
             continue
     train = pl.concat([target_rows] + without)
-    test = df.join(train, on="code", how="anti")
+    test = df_.join(train, on="index", how="anti")
+    train_indexes = train['index'].to_list()
+    test_indexes = test['index'].to_list()
+    train = df.filter(pl.col("index").is_in(train_indexes))
+    test = df.filter(pl.col("index").is_in(test_indexes))
+
     return train, test
 

@@ -34,7 +34,7 @@ def traverse_and_collect_rtd(directory):
 
 
 
-def print_code_diff(code1, code2):
+def print_code_diff(code1:str, code2:str):
     # Split the code into lines for a detailed comparison
     lines1 = code1.splitlines(keepends=True)
     lines2 = code2.splitlines(keepends=True)

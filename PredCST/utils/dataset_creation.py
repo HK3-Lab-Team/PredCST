@@ -1,7 +1,7 @@
 import polars as pl
 import math
 
-def create_dataset(df, ds_size, target_node, node_list):
+def create_dataset(df: pl.DataFrame, ds_size, target_node, node_list):
     
     df_ = df.drop(['type', 'code', 'type',
         'cst_tree',

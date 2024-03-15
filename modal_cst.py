@@ -27,7 +27,8 @@ def main():
     print(f"Time to read the dataset: {time.time() - start_time} seconds")
     start_time = time.time()
     node_cols = df.columns[13:]
-    df_f = df.filter(pl.col("type") == "function")
+    df_f = df.filter(pl.col("type") == "function").filter(pl.col("code_text-embedding-3-small_embedding").is_not_null())
+
 
     df_fb = booleanize_nodes(df_f, node_cols)
     df_f_ne, empty_cols = remove_empty_nodes(df_fb, node_cols)

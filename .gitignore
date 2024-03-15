@@ -7,3 +7,5 @@ PredCST/__pycache__/__init__.cpython-310.pyc
 PredCST/utils/__pycache__/__init__.cpython-310.pyc
 PredCST/utils/__pycache__/dataset_creation.cpython-310.pyc
 *.parquet
+*.pyc
+__pycache__/modal_cst.cpython-312.pyc

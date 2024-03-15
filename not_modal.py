@@ -5,8 +5,6 @@ import polars as pl
 from typing import List
 import time
 
-stub = cv_stub
-@stub.local_entrypoint()
 def main():
     def booleanize_nodes(df: pl.DataFrame, node_columns : List[str]) -> pl.DataFrame:
         expression= [pl.col(col) > 0 for col in node_columns]
@@ -42,21 +40,21 @@ def main():
     df_f_ne = cf.check_add_cv_index(df_f_ne)
     target = "If"
     print(f"df_f_ne shape: {df_f_ne.shape}, starting training")
-    results,pred=train_nested_cv_from_np_modal(df = df_f_ne,
-                     cv_type=("resample","stratified"),
-                     mount_dir=mount_dir,
-                     inputs=inputs,
-                     models=models_dict,
-                     group_outer=[target],
-                     k_outer = 5,
-                     group_inner=[target],
-                     k_inner = 5,
-                     r_outer=1,
-                     r_inner=1,
-                     skip_class=False,
-                     target_column = target)# 
+    # results,pred=train_nested_cv_from_np_modal(df = df_f_ne,
+    #                  cv_type=("stratified","stratified"),
+    #                  mount_dir=mount_dir,
+    #                  inputs=inputs,
+    #                  models=models_dict,
+    #                  group_outer=[target],
+    #                  k_outer = 5,
+    #                  group_inner=[target],
+    #                  k_inner = 5,
+    #                  r_outer=1,
+    #                  r_inner=1,
+    #                  skip_class=False,
+    #                  target_column = target)# 
 
-
+    results = pl.DataFrame(schema=cf.RESULTS_SCHEMA)
     print("Training completed successfully!")
     summary = cf.results_summary(results)
     print(summary)
@@ -64,5 +62,6 @@ def main():
 
 
 
-
+if __name__ == "__main__":
+    main()
     

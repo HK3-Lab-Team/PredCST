@@ -84,7 +84,7 @@ class CodeFrame:
         new_series = pl.Series(new_column_name, new_values)
         df = df.with_columns(new_series)
 
-        return self
+        return df
 
     def count_node_types(self, column_name: str, new_column_prefix: str = "node_count", resolution:str="all"):
         match resolution:
@@ -99,8 +99,8 @@ class CodeFrame:
             case _:
                 raise ValueError(f"Unknown resolution: {resolution}")
 
-        self.apply_visitor_to_column(
-            column_name, NodeTypeCounter, new_column_prefix
+        df_used = self.apply_visitor_to_column(
+            column_name=column_name, visitor_class=NodeTypeCounter,df=df_used, new_column_prefix=new_column_prefix
         )
         new_column_name = f"{column_name}_{new_column_prefix}"
         df_used = df_used.unnest(new_column_name)
@@ -120,10 +120,7 @@ class CodeFrame:
                 df_used = self.classes
             case _:
                 raise ValueError(f"Unknown resolution: {resolution}")
-
-        self.apply_visitor_to_column(
-            column_name, UnifiedOperatorCounter, new_column_prefix
-        )
+        df_used =  self.apply_visitor_to_column(column_name=column_name, visitor_class=UnifiedOperatorCounter,df=df_used, new_column_prefix=new_column_prefix)
         new_column_name = f"{column_name}_{new_column_prefix}"
         df_used = df_used.unnest(new_column_name)
         return df_used
